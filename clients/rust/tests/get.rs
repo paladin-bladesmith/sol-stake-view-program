@@ -65,8 +65,7 @@ async fn get_stake_account_rent(context: &mut ProgramTestContext) -> u64 {
     rent.minimum_balance(std::mem::size_of::<stake::state::StakeStateV2>())
 }
 
-#[allow(clippy::too_many_arguments)]
-pub async fn create_stake_account(
+async fn create_stake_account(
     context: &mut ProgramTestContext,
     stake: &Keypair,
     authorized: &stake::state::Authorized,
