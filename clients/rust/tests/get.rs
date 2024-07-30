@@ -2,8 +2,14 @@
 
 use {
     paladin_sol_stake_view_program_client::instructions::GetStakeActivatingAndDeactivating,
-    solana_program_test::{tokio, ProgramTestContext, ProgramTest},
-    solana_sdk::{system_program, system_instruction, pubkey::Pubkey, signature::{Keypair, Signer}, transaction::{TransactionError, Transaction}, stake, sysvar, instruction::InstructionError},
+    solana_program_test::{tokio, ProgramTest, ProgramTestContext},
+    solana_sdk::{
+        instruction::InstructionError,
+        pubkey::Pubkey,
+        signature::{Keypair, Signer},
+        stake, system_instruction, system_program, sysvar,
+        transaction::{Transaction, TransactionError},
+    },
     solana_vote_program::{
         vote_instruction,
         vote_state::{VoteInit, VoteState},
@@ -80,7 +86,11 @@ pub async fn create_stake_account(
         &[&context.payer, stake],
         context.last_blockhash,
     );
-    context.banks_client.process_transaction(transaction).await.unwrap();
+    context
+        .banks_client
+        .process_transaction(transaction)
+        .await
+        .unwrap();
 
     lamports
 }
@@ -98,15 +108,16 @@ async fn delegate_stake_account(
         )],
         Some(&context.payer.pubkey()),
         &[&context.payer],
-        context.last_blockhash
+        context.last_blockhash,
     );
-    context.banks_client.process_transaction(transaction).await.unwrap();
+    context
+        .banks_client
+        .process_transaction(transaction)
+        .await
+        .unwrap();
 }
 
-async fn deactivate_stake_account(
-    context: &mut ProgramTestContext,
-    stake_address: &Pubkey,
-) {
+async fn deactivate_stake_account(context: &mut ProgramTestContext, stake_address: &Pubkey) {
     let transaction = Transaction::new_signed_with_payer(
         &[stake::instruction::deactivate_stake(
             stake_address,
@@ -114,9 +125,13 @@ async fn deactivate_stake_account(
         )],
         Some(&context.payer.pubkey()),
         &[&context.payer],
-        context.last_blockhash
+        context.last_blockhash,
     );
-    context.banks_client.process_transaction(transaction).await.unwrap();
+    context
+        .banks_client
+        .process_transaction(transaction)
+        .await
+        .unwrap();
 }
 
 async fn setup(context: &mut ProgramTestContext, stake_amount: u64) -> (Pubkey, Pubkey) {
@@ -127,7 +142,8 @@ async fn setup(context: &mut ProgramTestContext, stake_amount: u64) -> (Pubkey, 
         &Pubkey::new_unique(),
         &Pubkey::new_unique(),
         &vote,
-    ).await;
+    )
+    .await;
     let vote = vote.pubkey();
 
     let stake_account = Keypair::new();
@@ -137,14 +153,11 @@ async fn setup(context: &mut ProgramTestContext, stake_amount: u64) -> (Pubkey, 
         &stake::state::Authorized::auto(&context.payer.pubkey()),
         &stake::state::Lockup::default(),
         stake_amount,
-    ).await;
+    )
+    .await;
     let stake_account = stake_account.pubkey();
 
-    delegate_stake_account(
-        context,
-        &stake_account,
-        &vote,
-    ).await;
+    delegate_stake_account(context, &stake_account, &vote).await;
 
     (vote, stake_account)
 }
@@ -170,13 +183,15 @@ async fn success_undelegated() {
         &stake::state::Authorized::auto(&payer),
         &stake::state::Lockup::default(),
         stake_amount,
-    ).await;
+    )
+    .await;
     let stake_account = stake_account.pubkey();
 
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -190,8 +205,15 @@ async fn success_undelegated() {
 
     // Then we get no data
 
-    let return_data = simulation_results.simulation_details.unwrap().return_data.unwrap();
-    assert_eq!(return_data.program_id, paladin_sol_stake_view_program_client::ID);
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
+    assert_eq!(
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
+    );
     assert_eq!(&return_data.data[0..56], [0; 56]);
 }
 
@@ -213,7 +235,8 @@ async fn success_activating() {
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -227,12 +250,28 @@ async fn success_activating() {
 
     // Then we get zero effective, all activating, zero deactivating
 
-    let return_data = simulation_results.simulation_details.unwrap().return_data.unwrap();
-    assert_eq!(return_data.program_id, paladin_sol_stake_view_program_client::ID);
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
+    assert_eq!(
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
+    );
     assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()), 0);
-    assert_eq!(u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()), stake_amount);
-    assert_eq!(u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()), 0);
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
+        0
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
+        stake_amount
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
+        0
+    );
 }
 
 #[tokio::test]
@@ -256,7 +295,8 @@ async fn success_effective() {
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -270,12 +310,28 @@ async fn success_effective() {
 
     // Then we get all effective, zero activating, zero deactivating
 
-    let return_data = simulation_results.simulation_details.unwrap().return_data.unwrap();
-    assert_eq!(return_data.program_id, paladin_sol_stake_view_program_client::ID);
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
+    assert_eq!(
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
+    );
     assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()), stake_amount);
-    assert_eq!(u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()), 0);
-    assert_eq!(u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()), 0);
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
+        stake_amount
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
+        0
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
+        0
+    );
 }
 
 #[tokio::test]
@@ -296,15 +352,13 @@ async fn success_deactivating() {
     let slot = context.genesis_config().epoch_schedule.first_normal_slot + 1;
     context.warp_to_slot(slot).unwrap();
 
-    deactivate_stake_account(
-        &mut context,
-        &stake_account,
-    ).await;
+    deactivate_stake_account(&mut context, &stake_account).await;
 
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -318,12 +372,28 @@ async fn success_deactivating() {
 
     // Then we get all effective, zero activating, all deactivating
 
-    let return_data = simulation_results.simulation_details.unwrap().return_data.unwrap();
-    assert_eq!(return_data.program_id, paladin_sol_stake_view_program_client::ID);
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
+    assert_eq!(
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
+    );
     assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()), stake_amount);
-    assert_eq!(u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()), 0);
-    assert_eq!(u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()), stake_amount);
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
+        stake_amount
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
+        0
+    );
+    assert_eq!(
+        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
+        stake_amount
+    );
 }
 
 #[tokio::test]
@@ -344,10 +414,7 @@ async fn success_inactive() {
     let slot = context.genesis_config().epoch_schedule.first_normal_slot + 1;
     context.warp_to_slot(slot).unwrap();
 
-    deactivate_stake_account(
-        &mut context,
-        &stake_account,
-    ).await;
+    deactivate_stake_account(&mut context, &stake_account).await;
 
     let slot = slot + context.genesis_config().epoch_schedule.slots_per_epoch;
     context.warp_to_slot(slot).unwrap();
@@ -355,7 +422,8 @@ async fn success_inactive() {
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -369,8 +437,15 @@ async fn success_inactive() {
 
     // Then we get all zeroes
 
-    let return_data = simulation_results.simulation_details.unwrap().return_data.unwrap();
-    assert_eq!(return_data.program_id, paladin_sol_stake_view_program_client::ID);
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
+    assert_eq!(
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
+    );
     assert_eq!(&return_data.data[0..56], [0; 56]);
 }
 
@@ -392,7 +467,8 @@ async fn fail_not_stake_history() {
     let ix = GetStakeActivatingAndDeactivating {
         stake: stake_account,
         stake_history: Pubkey::new_unique(), // not the stake history
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
@@ -427,7 +503,8 @@ async fn fail_not_stake() {
     let ix = GetStakeActivatingAndDeactivating {
         stake: Pubkey::new_unique(),
         stake_history: sysvar::stake_history::id(),
-    }.instruction();
+    }
+    .instruction();
 
     // When we get the stake amounts.
 
