@@ -1,5 +1,7 @@
 use {
-    crate::{instruction::SolStakeViewInstruction, state::StakeAmount},
+    crate::{
+        instruction::SolStakeViewInstruction, state::GetStakeActivatingAndDeactivatingReturnData,
+    },
     num_traits::FromPrimitive,
     solana_program::{
         account_info::{next_account_info, AccountInfo},
@@ -45,13 +47,16 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
         return Err(ProgramError::InvalidArgument);
     }
 
-    let mut return_data = [0u8; std::mem::size_of::<StakeAmount>()];
+    let mut return_data = [0u8; std::mem::size_of::<GetStakeActivatingAndDeactivatingReturnData>()];
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
 
     // if not delegated, that's fine, all zeros
     if let Some(delegation) = stake.delegation() {
         // safe to unwrap since we created this ourselves
-        let stake_amount = bytemuck::try_from_bytes_mut::<StakeAmount>(&mut return_data).unwrap();
+        let stake_amount = bytemuck::try_from_bytes_mut::<
+            GetStakeActivatingAndDeactivatingReturnData,
+        >(&mut return_data)
+        .unwrap();
         let stake_history = bincode::deserialize(&stake_history_info.data.borrow())
             .map_err(|_| ProgramError::InvalidAccountData)?;
         let current_epoch = Clock::get()?.epoch;
