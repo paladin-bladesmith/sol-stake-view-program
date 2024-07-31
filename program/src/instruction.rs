@@ -1,9 +1,9 @@
 use {
-    num_derive::{FromPrimitive, ToPrimitive},
+    num_enum::TryFromPrimitive,
     shank::{ShankContext, ShankInstruction},
 };
 
-#[derive(Clone, Debug, ShankContext, ShankInstruction, FromPrimitive, ToPrimitive)]
+#[derive(Clone, Debug, ShankContext, ShankInstruction, TryFromPrimitive)]
 #[repr(u8)]
 pub enum SolStakeViewInstruction {
     /// Outputs the validator vote account address that this stake account is

@@ -2,7 +2,6 @@ use {
     crate::{
         instruction::SolStakeViewInstruction, state::GetStakeActivatingAndDeactivatingReturnData,
     },
-    num_traits::FromPrimitive,
     solana_program::{
         account_info::{next_account_info, AccountInfo},
         borsh1::try_from_slice_unchecked,
@@ -25,8 +24,8 @@ pub fn process_instruction<'a>(
     if instruction_data.is_empty() {
         return Err(ProgramError::InvalidArgument);
     }
-    let instruction = SolStakeViewInstruction::from_u8(instruction_data[0])
-        .ok_or(ProgramError::InvalidArgument)?;
+    let instruction = SolStakeViewInstruction::try_from(instruction_data[0])
+        .map_err(|_| ProgramError::InvalidArgument)?;
     match instruction {
         SolStakeViewInstruction::GetStakeActivatingAndDeactivating => {
             msg!("Instruction: GetStakeActivatingAndDeactivating");

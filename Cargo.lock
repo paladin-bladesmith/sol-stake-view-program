@@ -2404,8 +2404,7 @@ dependencies = [
  "borsh 1.5.1",
  "bytemuck",
  "bytemuck_derive",
- "num-derive 0.3.3",
- "num-traits",
+ "num_enum",
  "shank",
  "solana-program",
 ]

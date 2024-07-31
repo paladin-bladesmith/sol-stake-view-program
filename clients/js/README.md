@@ -1,6 +1,6 @@
 # JavaScript client
 
-A generated JavaScript library for the Sol Stake View Program program.
+A generated JavaScript library for the Sol Stake View program.
 
 ## Getting started
 

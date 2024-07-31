@@ -1,7 +1,7 @@
 {
   "name": "@paladin-bladesmith/sol-stake-view-program",
   "version": "0.0.0",
-  "description": "JavaScript client for the Sol Stake View Program program",
+  "description": "JavaScript client for the Sol Stake View program",
   "sideEffects": false,
   "module": "./dist/src/index.mjs",
   "main": "./dist/src/index.js",
