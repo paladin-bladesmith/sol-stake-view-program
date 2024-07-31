@@ -1,0 +1,38 @@
+{
+  "version": "0.1.0",
+  "name": "paladin_sol_stake_view_program",
+  "instructions": [
+    {
+      "name": "GetStakeActivatingAndDeactivating",
+      "accounts": [
+        {
+          "name": "stake",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "The target SOL stake account"
+          ]
+        },
+        {
+          "name": "stakeHistory",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "The stake history sysvar"
+          ]
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 0
+      }
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "stkVUdWUiarMmkttUKMGLCLwHUkBqYfQ9vZcfG3T7LU",
+    "binaryVersion": "0.4.2",
+    "libVersion": "0.4.2"
+  }
+}
