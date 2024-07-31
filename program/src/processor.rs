@@ -1,9 +1,20 @@
 use {
-    crate::instruction::SolStakeViewInstruction,
+    crate::{
+        instruction::SolStakeViewInstruction, state::GetStakeActivatingAndDeactivatingReturnData,
+    },
     num_traits::FromPrimitive,
     solana_program::{
-        account_info::{next_account_info, AccountInfo}, clock::Clock, borsh1::try_from_slice_unchecked, entrypoint::ProgramResult, msg, program_error::ProgramError, pubkey::Pubkey, stake, sysvar::{self, Sysvar}, program::set_return_data,
-    }
+        account_info::{next_account_info, AccountInfo},
+        borsh1::try_from_slice_unchecked,
+        clock::Clock,
+        entrypoint::ProgramResult,
+        msg,
+        program::set_return_data,
+        program_error::ProgramError,
+        pubkey::Pubkey,
+        stake,
+        sysvar::{self, Sysvar},
+    },
 };
 
 pub fn process_instruction<'a>(
@@ -14,7 +25,8 @@ pub fn process_instruction<'a>(
     if instruction_data.is_empty() {
         return Err(ProgramError::InvalidArgument);
     }
-    let instruction = SolStakeViewInstruction::from_u8(instruction_data[0]).ok_or(ProgramError::InvalidArgument)?;
+    let instruction = SolStakeViewInstruction::from_u8(instruction_data[0])
+        .ok_or(ProgramError::InvalidArgument)?;
     match instruction {
         SolStakeViewInstruction::GetStakeActivatingAndDeactivating => {
             msg!("Instruction: GetStakeActivatingAndDeactivating");
@@ -22,8 +34,6 @@ pub fn process_instruction<'a>(
         }
     }
 }
-
-const RETURN_DATA_SIZE: usize = 56;
 
 fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
@@ -37,20 +47,30 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
         return Err(ProgramError::InvalidArgument);
     }
 
-    let mut return_data = [0u8; RETURN_DATA_SIZE];
+    let mut return_data = [0u8; std::mem::size_of::<GetStakeActivatingAndDeactivatingReturnData>()];
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
 
     // if not delegated, that's fine, all zeros
     if let Some(delegation) = stake.delegation() {
-        let stake_history = bincode::deserialize(&stake_history_info.data.borrow()).map_err(|_| ProgramError::InvalidAccountData)?;
+        // safe to unwrap since we created this ourselves
+        let stake_amount = bytemuck::try_from_bytes_mut::<
+            GetStakeActivatingAndDeactivatingReturnData,
+        >(&mut return_data)
+        .unwrap();
+        let stake_history = bincode::deserialize(&stake_history_info.data.borrow())
+            .map_err(|_| ProgramError::InvalidAccountData)?;
         let current_epoch = Clock::get()?.epoch;
-        let stake_activation = delegation.stake_activating_and_deactivating(current_epoch, &stake_history, Some(0));
+        let stake_activation =
+            delegation.stake_activating_and_deactivating(current_epoch, &stake_history, Some(0));
 
-        if stake_activation.effective != 0 || stake_activation.activating != 0 || stake_activation.deactivating != 0 {
-            return_data[0..32].copy_from_slice(delegation.voter_pubkey.as_ref());
-            return_data[32..40].copy_from_slice(&stake_activation.effective.to_le_bytes());
-            return_data[40..48].copy_from_slice(&stake_activation.activating.to_le_bytes());
-            return_data[48..56].copy_from_slice(&stake_activation.deactivating.to_le_bytes());
+        if stake_activation.effective != 0
+            || stake_activation.activating != 0
+            || stake_activation.deactivating != 0
+        {
+            stake_amount.delegated_vote = delegation.voter_pubkey;
+            stake_amount.effective = stake_activation.effective;
+            stake_amount.activating = stake_activation.activating;
+            stake_amount.deactivating = stake_activation.deactivating;
         }
     }
 

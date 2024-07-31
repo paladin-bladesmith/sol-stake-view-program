@@ -1,7 +1,10 @@
 #![cfg(feature = "test-sbf")]
 
 use {
-    paladin_sol_stake_view_program_client::instructions::GetStakeActivatingAndDeactivating,
+    paladin_sol_stake_view_program_client::{
+        instructions::GetStakeActivatingAndDeactivating,
+        GetStakeActivatingAndDeactivatingReturnData,
+    },
     solana_program_test::{tokio, ProgramTest, ProgramTestContext},
     solana_sdk::{
         instruction::InstructionError,
@@ -213,7 +216,11 @@ async fn success_undelegated() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    assert_eq!(&return_data.data[0..56], [0; 56]);
+    let expected = GetStakeActivatingAndDeactivatingReturnData::default();
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
 
 #[tokio::test]
@@ -258,19 +265,15 @@ async fn success_activating() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
-        0
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
-        stake_amount
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
-        0
-    );
+    let expected = GetStakeActivatingAndDeactivatingReturnData {
+        delegated_vote: Some(vote).try_into().unwrap(),
+        activating: stake_amount,
+        ..Default::default()
+    };
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
 
 #[tokio::test]
@@ -318,19 +321,15 @@ async fn success_effective() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
-        stake_amount
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
-        0
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
-        0
-    );
+    let expected = GetStakeActivatingAndDeactivatingReturnData {
+        delegated_vote: Some(vote).try_into().unwrap(),
+        effective: stake_amount,
+        ..Default::default()
+    };
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
 
 #[tokio::test]
@@ -380,19 +379,16 @@ async fn success_deactivating() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    assert_eq!(&return_data.data[0..32], vote.as_ref());
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[32..40].try_into().unwrap()),
-        stake_amount
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[40..48].try_into().unwrap()),
-        0
-    );
-    assert_eq!(
-        u64::from_le_bytes(return_data.data[48..56].try_into().unwrap()),
-        stake_amount
-    );
+    let expected = GetStakeActivatingAndDeactivatingReturnData {
+        delegated_vote: Some(vote).try_into().unwrap(),
+        effective: stake_amount,
+        deactivating: stake_amount,
+        ..Default::default()
+    };
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
 
 #[tokio::test]
@@ -445,7 +441,11 @@ async fn success_inactive() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    assert_eq!(&return_data.data[0..56], [0; 56]);
+    let expected = GetStakeActivatingAndDeactivatingReturnData::default();
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
 
 #[tokio::test]

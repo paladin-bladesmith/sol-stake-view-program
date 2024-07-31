@@ -1,6 +1,6 @@
 use {
     num_derive::{FromPrimitive, ToPrimitive},
-    shank::{ShankContext, ShankInstruction}
+    shank::{ShankContext, ShankInstruction},
 };
 
 #[derive(Clone, Debug, ShankContext, ShankInstruction, FromPrimitive, ToPrimitive)]
@@ -10,7 +10,7 @@ pub enum SolStakeViewInstruction {
     /// delegated to, followed by the effective, activating, and deactivating
     /// SOL stake amount.
     /// Must be a valid SOL stake account.
-    #[account(0, name="stake", desc = "The target SOL stake account")]
-    #[account(1, name="stake_history", desc = "The stake history sysvar")]
+    #[account(0, name = "stake", desc = "The target SOL stake account")]
+    #[account(1, name = "stake_history", desc = "The stake history sysvar")]
     GetStakeActivatingAndDeactivating,
 }
