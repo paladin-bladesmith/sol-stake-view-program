@@ -11,3 +11,9 @@ pub struct GetStakeActivatingAndDeactivatingReturnData {
     pub activating: u64,
     pub deactivating: u64,
 }
+
+#[repr(C)]
+#[derive(Copy, Clone, Pod, Zeroable)]
+pub struct Wrapper {
+    pub data: GetStakeActivatingAndDeactivatingReturnData
+}

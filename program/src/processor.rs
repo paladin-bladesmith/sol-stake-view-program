@@ -1,6 +1,6 @@
 use {
     crate::{
-        instruction::SolStakeViewInstruction, state::GetStakeActivatingAndDeactivatingReturnData,
+        instruction::SolStakeViewInstruction, state::{GetStakeActivatingAndDeactivatingReturnData, Wrapper},
     },
     solana_program::{
         account_info::{next_account_info, AccountInfo},
@@ -34,6 +34,11 @@ pub fn process_instruction<'a>(
     }
 }
 
+fn get_return_data(data: &mut [u8]) -> GetStakeActivatingAndDeactivatingReturnData {
+    let val = bytemuck::try_from_bytes_mut::<Wrapper>(data).unwrap();
+    val.data
+}
+
 fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     let stake_info = next_account_info(accounts_iter)?;
@@ -52,10 +57,7 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
     // if not delegated, that's fine, all zeros
     if let Some(delegation) = stake.delegation() {
         // safe to unwrap since we created this ourselves
-        let stake_amount = bytemuck::try_from_bytes_mut::<
-            GetStakeActivatingAndDeactivatingReturnData,
-        >(&mut return_data)
-        .unwrap();
+        let mut stake_amount = get_return_data(&mut return_data);
         let stake_history = bincode::deserialize(&stake_history_info.data.borrow())
             .map_err(|_| ProgramError::InvalidAccountData)?;
         let current_epoch = Clock::get()?.epoch;
