@@ -1,4 +1,5 @@
-pub mod entrypoint;
+#[cfg(all(target_os = "solana", feature = "bpf-entrypoint"))]
+mod entrypoint;
 pub mod instruction;
 pub mod processor;
 pub mod state;

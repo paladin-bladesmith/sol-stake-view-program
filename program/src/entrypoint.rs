@@ -1,8 +1,12 @@
-use solana_program::{
-    account_info::AccountInfo, entrypoint, entrypoint::ProgramResult, msg, pubkey::Pubkey,
+use {
+    crate::processor,
+    solana_program::{
+        account_info::AccountInfo,
+        entrypoint::{self, ProgramResult},
+        msg,
+        pubkey::Pubkey,
+    },
 };
-
-use crate::processor;
 
 entrypoint!(process_instruction);
 fn process_instruction<'a>(

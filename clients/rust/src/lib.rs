@@ -1,13 +1,11 @@
 mod generated;
 
+pub use generated::{programs::SOL_STAKE_VIEW_PROGRAM_ID as ID, *};
 use {
     bytemuck_derive::{Pod, Zeroable},
     solana_program::pubkey::Pubkey,
     spl_pod::option::PodOption,
 };
-
-pub use generated::programs::SOL_STAKE_VIEW_PROGRAM_ID as ID;
-pub use generated::*;
 
 /// Helper struct to easily handle the return data created by the
 /// `GetStakeActivatingAndDeactivating` instruction.

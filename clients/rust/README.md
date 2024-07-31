@@ -1,6 +1,6 @@
 # Rust client
 
-A generated Rust library for the Sol Stake View Program program.
+A generated Rust library for the Sol Stake View program.
 
 ## Getting started
 
