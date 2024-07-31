@@ -266,7 +266,7 @@ async fn success_activating() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        delegated_vote: vote,
+        delegated_vote: Some(vote).try_into().unwrap(),
         activating: stake_amount,
         ..Default::default()
     };
@@ -322,7 +322,7 @@ async fn success_effective() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        delegated_vote: vote,
+        delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount,
         ..Default::default()
     };
@@ -380,7 +380,7 @@ async fn success_deactivating() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        delegated_vote: vote,
+        delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount,
         deactivating: stake_amount,
         ..Default::default()
