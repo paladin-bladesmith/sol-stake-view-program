@@ -2,13 +2,13 @@ use {
     crate::processor,
     solana_program::{
         account_info::AccountInfo,
-        entrypoint::{self, ProgramResult},
+        entrypoint::ProgramResult,
         msg,
         pubkey::Pubkey,
     },
 };
 
-entrypoint!(process_instruction);
+solana_program::entrypoint!(process_instruction);
 fn process_instruction<'a>(
     program_id: &'a Pubkey,
     accounts: &'a [AccountInfo<'a>],
