@@ -49,13 +49,18 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
     let mut return_data = [0u8; std::mem::size_of::<GetStakeActivatingAndDeactivatingReturnData>()];
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
 
+    // safe to unwrap since we created this ourselves
+    let stake_view = bytemuck::try_from_bytes_mut::<GetStakeActivatingAndDeactivatingReturnData>(
+        &mut return_data,
+    )
+    .unwrap();
+
+    if let Some(authorized) = stake.authorized() {
+        stake_view.withdrawer = authorized.withdrawer;
+    }
+
     // if not delegated, that's fine, all zeros
     if let Some(delegation) = stake.delegation() {
-        // safe to unwrap since we created this ourselves
-        let stake_amount = bytemuck::try_from_bytes_mut::<
-            GetStakeActivatingAndDeactivatingReturnData,
-        >(&mut return_data)
-        .unwrap();
         let stake_history = bincode::deserialize(&stake_history_info.data.borrow())
             .map_err(|_| ProgramError::InvalidAccountData)?;
         let current_epoch = Clock::get()?.epoch;
@@ -66,10 +71,10 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
             || stake_activation.activating != 0
             || stake_activation.deactivating != 0
         {
-            stake_amount.delegated_vote = delegation.voter_pubkey;
-            stake_amount.effective = stake_activation.effective;
-            stake_amount.activating = stake_activation.activating;
-            stake_amount.deactivating = stake_activation.deactivating;
+            stake_view.delegated_vote = delegation.voter_pubkey;
+            stake_view.effective = stake_activation.effective;
+            stake_view.activating = stake_activation.activating;
+            stake_view.deactivating = stake_activation.deactivating;
         }
     }
 
