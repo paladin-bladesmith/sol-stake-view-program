@@ -3,7 +3,7 @@ import 'zx/globals';
 import {
   cliArguments,
   getToolchainArgument,
-  popArgument,
+  popFlag,
   workingDirectory,
 } from '../utils.mjs';
 
@@ -19,7 +19,7 @@ const lintArgs = [
   ...cliArgs.slice(1)
 ];
 
-const fix = popArgument(lintArgs, '--fix');
+const fix = popFlag(lintArgs, '--fix');
 const toolchain = getToolchainArgument('format');
 const manifestPath = path.join(
   workingDirectory,

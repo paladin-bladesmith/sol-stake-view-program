@@ -101,7 +101,7 @@ export function cliArguments() {
   return process.argv.slice(3);
 }
 
-export function popArgument(args, arg) {
+export function popFlag(args, arg) {
   const index = args.indexOf(arg);
   if (index >= 0) {
     args.splice(index, 1);

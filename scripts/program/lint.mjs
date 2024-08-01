@@ -4,7 +4,7 @@ import {
   cliArguments,
   getProgramFolders,
   getToolchainArgument,
-  popArgument,
+  popFlag,
   workingDirectory,
 } from '../utils.mjs';
 
@@ -20,7 +20,7 @@ const lintArgs = [
   ...cliArguments()
 ];
 
-const fix = popArgument(lintArgs, '--fix');
+const fix = popFlag(lintArgs, '--fix');
 const toolchain = getToolchainArgument('format');
 
 // Lint the programs using clippy.
