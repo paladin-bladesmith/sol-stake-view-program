@@ -46,14 +46,8 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
         return Err(ProgramError::InvalidArgument);
     }
 
-    let mut return_data = [0u8; std::mem::size_of::<GetStakeActivatingAndDeactivatingReturnData>()];
+    let mut stake_view = GetStakeActivatingAndDeactivatingReturnData::default();
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
-
-    // safe to unwrap since we created this ourselves
-    let stake_view = bytemuck::try_from_bytes_mut::<GetStakeActivatingAndDeactivatingReturnData>(
-        &mut return_data,
-    )
-    .unwrap();
 
     if let Some(authorized) = stake.authorized() {
         stake_view.withdrawer = authorized.withdrawer;
@@ -78,6 +72,6 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
         }
     }
 
-    set_return_data(&return_data);
+    set_return_data(bytemuck::bytes_of(&stake_view));
     Ok(())
 }
