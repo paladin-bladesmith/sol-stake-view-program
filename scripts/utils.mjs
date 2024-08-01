@@ -70,6 +70,12 @@ export function getAllProgramFolders() {
   );
 }
 
+export function getAllRustClientFolders() {
+  return getCargo().workspace.members.filter((member) =>
+    !(getCargo(member).lib?.['crate-type'] ?? []).includes('cdylib'),
+  );
+}
+
 export function getCargo(folder) {
   return parseToml(
     fs.readFileSync(
@@ -107,6 +113,15 @@ export function popFlag(args, arg) {
     args.splice(index, 1);
   }
   return index >= 0;
+}
+
+export function popArgument(args, arg) {
+  const index = args.indexOf(arg);
+  if (index >= 0) {
+    const arg = args.splice(index, 2);
+    return arg[1];
+  }
+  return null;
 }
 
 export function partitionArguments(args, delimiter) {

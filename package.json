@@ -18,13 +18,13 @@
     "clients:js:lint": "zx ./scripts/client/lint-js.mjs",
     "clients:js:publish": "zx ./scripts/client/publish-js.mjs",
     "clients:js:test": "zx ./scripts/client/test-js.mjs",
-    "clients:rust:format": "zx ./scripts/client/format-rust.mjs rust",
-    "clients:rust:lint": "zx ./scripts/client/lint-rust.mjs rust",
-    "clients:rust:test": "zx ./scripts/client/test-rust.mjs rust",
+    "clients:rust:format": "zx ./scripts/client/format-rust.mjs --client-path clients/rust",
+    "clients:rust:lint": "zx ./scripts/client/lint-rust.mjs --client-path clients/rust",
+    "clients:rust:test": "zx ./scripts/client/test-rust.mjs --client-path clients/rust",
     "clients:rust:publish": "zx ./scripts/client/publish-rust.mjs",
-    "clients:cli:format": "zx ./scripts/client/format-rust.mjs cli",
-    "clients:cli:lint": "zx ./scripts/client/lint-rust.mjs cli",
-    "clients:cli:test": "zx ./scripts/client/test-rust.mjs cli"
+    "clients:cli:format": "zx ./scripts/client/format-rust.mjs --client-path clients/cli",
+    "clients:cli:lint": "zx ./scripts/client/lint-rust.mjs --client-path clients/cli",
+    "clients:cli:test": "zx ./scripts/client/test-rust.mjs --client-path clients/cli"
   },
   "devDependencies": {
     "@iarna/toml": "^2.2.5",
