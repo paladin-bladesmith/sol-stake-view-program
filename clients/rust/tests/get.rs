@@ -271,7 +271,7 @@ async fn success_activating() {
     let expected = GetStakeActivatingAndDeactivatingReturnData {
         withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
-        activating: stake_amount,
+        activating: stake_amount.into(),
         ..Default::default()
     };
     let returned =
@@ -328,7 +328,7 @@ async fn success_effective() {
     let expected = GetStakeActivatingAndDeactivatingReturnData {
         withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
-        effective: stake_amount,
+        effective: stake_amount.into(),
         ..Default::default()
     };
     let returned =
@@ -387,8 +387,8 @@ async fn success_deactivating() {
     let expected = GetStakeActivatingAndDeactivatingReturnData {
         withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
-        effective: stake_amount,
-        deactivating: stake_amount,
+        effective: stake_amount.into(),
+        deactivating: stake_amount.into(),
         ..Default::default()
     };
     let returned =

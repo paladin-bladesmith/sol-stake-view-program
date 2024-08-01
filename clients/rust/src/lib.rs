@@ -4,7 +4,7 @@ pub use generated::{programs::SOL_STAKE_VIEW_PROGRAM_ID as ID, *};
 use {
     bytemuck_derive::{Pod, Zeroable},
     solana_program::pubkey::Pubkey,
-    spl_pod::option::PodOption,
+    spl_pod::{option::PodOption, primitives::PodU64},
 };
 
 /// Helper struct to easily handle the return data created by the
@@ -14,9 +14,9 @@ use {
 pub struct GetStakeActivatingAndDeactivatingReturnData {
     pub withdrawer: PodOption<Pubkey>,
     pub delegated_vote: PodOption<Pubkey>,
-    pub effective: u64,
-    pub activating: u64,
-    pub deactivating: u64,
+    pub effective: PodU64,
+    pub activating: PodU64,
+    pub deactivating: PodU64,
 }
 
 impl Default for GetStakeActivatingAndDeactivatingReturnData {
@@ -24,9 +24,9 @@ impl Default for GetStakeActivatingAndDeactivatingReturnData {
         Self {
             withdrawer: None.try_into().unwrap(),
             delegated_vote: None.try_into().unwrap(),
-            effective: 0,
-            activating: 0,
-            deactivating: 0,
+            effective: 0.into(),
+            activating: 0.into(),
+            deactivating: 0.into(),
         }
     }
 }
