@@ -12,6 +12,7 @@ use {
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct GetStakeActivatingAndDeactivatingReturnData {
+    pub withdrawer: PodOption<Pubkey>,
     pub delegated_vote: PodOption<Pubkey>,
     pub effective: u64,
     pub activating: u64,
@@ -21,6 +22,7 @@ pub struct GetStakeActivatingAndDeactivatingReturnData {
 impl Default for GetStakeActivatingAndDeactivatingReturnData {
     fn default() -> Self {
         Self {
+            withdrawer: None.try_into().unwrap(),
             delegated_vote: None.try_into().unwrap(),
             effective: 0,
             activating: 0,

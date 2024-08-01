@@ -216,7 +216,10 @@ async fn success_undelegated() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    let expected = GetStakeActivatingAndDeactivatingReturnData::default();
+    let expected = GetStakeActivatingAndDeactivatingReturnData {
+        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        ..Default::default()
+    };
     let returned =
         bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
             .unwrap();
@@ -266,6 +269,7 @@ async fn success_activating() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
+        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
         activating: stake_amount,
         ..Default::default()
@@ -322,6 +326,7 @@ async fn success_effective() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
+        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount,
         ..Default::default()
@@ -380,6 +385,7 @@ async fn success_deactivating() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
+        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount,
         deactivating: stake_amount,
@@ -441,7 +447,10 @@ async fn success_inactive() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
-    let expected = GetStakeActivatingAndDeactivatingReturnData::default();
+    let expected = GetStakeActivatingAndDeactivatingReturnData {
+        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        ..Default::default()
+    };
     let returned =
         bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
             .unwrap();
