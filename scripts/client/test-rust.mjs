@@ -1,6 +1,11 @@
 #!/usr/bin/env zx
 import 'zx/globals';
-import { cliArguments, getAllRustClientFolders, popArgument, workingDirectory } from '../utils.mjs';
+import {
+  cliArguments,
+  getAllRustClientFolders,
+  popArgument,
+  workingDirectory,
+} from '../utils.mjs';
 
 // Configure additional arguments here, e.g.:
 // ['--arg1', '--arg2', ...cliArguments()]

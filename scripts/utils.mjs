@@ -71,8 +71,8 @@ export function getAllProgramFolders() {
 }
 
 export function getAllRustClientFolders() {
-  return getCargo().workspace.members.filter((member) =>
-    !(getCargo(member).lib?.['crate-type'] ?? []).includes('cdylib'),
+  return getCargo().workspace.members.filter(
+    (member) => !(getCargo(member).lib?.['crate-type'] ?? []).includes('cdylib')
   );
 }
 

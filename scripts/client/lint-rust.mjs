@@ -15,7 +15,7 @@ const lintArgs = [
   '-Zunstable-options',
   '--',
   '--deny=warnings',
-  ...cliArguments()
+  ...cliArguments(),
 ];
 
 const fix = popFlag(lintArgs, '--fix');
