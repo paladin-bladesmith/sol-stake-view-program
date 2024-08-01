@@ -1,11 +1,6 @@
 use {
     crate::processor,
-    solana_program::{
-        account_info::AccountInfo,
-        entrypoint::ProgramResult,
-        msg,
-        pubkey::Pubkey,
-    },
+    solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey},
 };
 
 solana_program::entrypoint!(process_instruction);
