@@ -61,6 +61,11 @@ runs:
         version: ${{ env.SOLANA_VERSION }}
         cache: true
 
+    - name: Install protoc
+      if: ${{ inputs.solana == 'true' }}
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+
     - name: Cache Cargo Dependencies
       if: ${{ inputs.cargo-cache-key && !inputs.cargo-cache-fallback-key }}
       uses: actions/cache@v4
