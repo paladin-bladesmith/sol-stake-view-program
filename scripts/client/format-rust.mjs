@@ -10,7 +10,9 @@ import {
 
 // Configure additional arguments here, e.g.:
 // ['--arg1', '--arg2', ...cliArguments()]
-const formatArgs = cliArguments();
+const cliArgs = cliArguments();
+const clientPath = cliArgs[0];
+const formatArgs = cliArgs.slice(1);
 
 const fix = popArgument(formatArgs, '--fix');
 const [cargoArgs, fmtArgs] = partitionArguments(formatArgs, '--');
@@ -18,7 +20,7 @@ const toolchain = getToolchainArgument('format');
 const manifestPath = path.join(
   workingDirectory,
   'clients',
-  'rust',
+  clientPath,
   'Cargo.toml'
 );
 

@@ -4,14 +4,17 @@ import { cliArguments, workingDirectory } from '../utils.mjs';
 
 // Configure additional arguments here, e.g.:
 // ['--arg1', '--arg2', ...cliArguments()]
-const testArgs = cliArguments();
+const cliArgs = cliArguments();
+const clientPath = cliArgs[0];
+const testArgs = cliArgs.slice(1);
 
 const hasSolfmt = await which('solfmt', { nothrow: true });
 
 // Run the tests.
-cd(path.join(workingDirectory, 'clients', 'rust'));
+cd(path.join(workingDirectory, 'clients', clientPath));
+const sbfOutDir = path.join(workingDirectory, 'target', 'deploy');
 if (hasSolfmt) {
-  await $`cargo test-sbf ${testArgs} 2>&1 | solfmt`;
+  await $`SBF_OUT_DIR=${sbfOutDir} cargo test ${testArgs} 2>&1 | solfmt`;
 } else {
-  await $`cargo test-sbf ${testArgs}`;
+  await $`SBF_OUT_DIR=${sbfOutDir} cargo test ${testArgs}`;
 }

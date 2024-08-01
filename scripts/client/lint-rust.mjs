@@ -7,13 +7,16 @@ import {
   workingDirectory,
 } from '../utils.mjs';
 
+const cliArgs = cliArguments();
+const clientPath = cliArgs[0];
+
 // Configure additional arguments here, e.g.:
 // ['--arg1', '--arg2', ...cliArguments()]
 const lintArgs = [
   '-Zunstable-options',
   '--',
   '--deny=warnings',
-  ...cliArguments()
+  ...cliArgs.slice(1)
 ];
 
 const fix = popArgument(lintArgs, '--fix');
@@ -21,7 +24,7 @@ const toolchain = getToolchainArgument('format');
 const manifestPath = path.join(
   workingDirectory,
   'clients',
-  'rust',
+  clientPath,
   'Cargo.toml'
 );
 
