@@ -1,5 +1,3 @@
-#![cfg(feature = "test-sbf")]
-
 use {
     paladin_sol_stake_view_program_client::{
         instructions::GetStakeActivatingAndDeactivating,

@@ -5,7 +5,7 @@ import {
   getProgramFolders,
   getToolchainArgument,
   partitionArguments,
-  popArgument,
+  popFlag,
   workingDirectory,
 } from '../utils.mjs';
 
@@ -13,7 +13,7 @@ import {
 // ['--arg1', '--arg2', ...cliArguments()]
 const formatArgs = cliArguments();
 
-const fix = popArgument(formatArgs, '--fix');
+const fix = popFlag(formatArgs, '--fix');
 const [cargoArgs, fmtArgs] = partitionArguments(formatArgs, '--');
 const toolchain = getToolchainArgument('format');
 

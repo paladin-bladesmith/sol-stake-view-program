@@ -186,15 +186,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(test)]
 mod test {
-    use {super::*, solana_test_validator::*};
+    use {
+        super::*,
+        solana_sdk::{bpf_loader_upgradeable, signature::Keypair, stake},
+        solana_test_validator::*,
+        std::{env, path::PathBuf},
+    };
 
     #[tokio::test]
     async fn test_get() {
-        let (test_validator, payer) = TestValidatorGenesis::default().start_async().await;
+        let mut test_validator_genesis = TestValidatorGenesis::default();
+        let sbf_out_dir = env::var("SBF_OUT_DIR").unwrap();
+        let mut program_path = PathBuf::from(sbf_out_dir);
+        program_path.push("paladin_sol_stake_view_program.so");
+        test_validator_genesis.add_upgradeable_programs_with_path(&[UpgradeableProgramInfo {
+            program_id: paladin_sol_stake_view_program_client::ID,
+            loader: bpf_loader_upgradeable::id(),
+            program_path,
+            upgrade_authority: Pubkey::new_unique(),
+        }]);
+        let (test_validator, payer) = test_validator_genesis.start_async().await;
         let rpc_client = test_validator.get_async_rpc_client();
+        let blockhash = rpc_client.get_latest_blockhash().await.unwrap();
+
+        let stake_amount = 1_000_000_000_000;
+        let stake_account = Keypair::new();
+        let transaction = Transaction::new_signed_with_payer(
+            &stake::instruction::create_account(
+                &payer.pubkey(),
+                &stake_account.pubkey(),
+                &stake::state::Authorized::auto(&payer.pubkey()),
+                &stake::state::Lockup::default(),
+                stake_amount,
+            ),
+            Some(&payer.pubkey()),
+            &[&payer, &stake_account],
+            blockhash,
+        );
+        rpc_client
+            .send_and_confirm_transaction(&transaction)
+            .await
+            .unwrap();
 
         assert!(matches!(
-            process_get(&rpc_client, &payer, &Pubkey::new_unique()).await,
+            process_get(&rpc_client, &payer, &stake_account.pubkey()).await,
             Ok(_)
         ));
     }
