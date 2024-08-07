@@ -495,7 +495,7 @@ async fn fail_not_stake_history() {
 }
 
 #[tokio::test]
-async fn fail_not_stake() {
+async fn success_not_stake() {
     let mut context = ProgramTest::new(
         "paladin_sol_stake_view_program",
         paladin_sol_stake_view_program_client::ID,
@@ -522,10 +522,20 @@ async fn fail_not_stake() {
     );
     let simulation_results = context.banks_client.simulate_transaction(tx).await.unwrap();
 
-    // Then it fails.
+    // Then we get all zeroes
 
+    let return_data = simulation_results
+        .simulation_details
+        .unwrap()
+        .return_data
+        .unwrap();
     assert_eq!(
-        simulation_results.result.unwrap().unwrap_err(),
-        TransactionError::InstructionError(0, InstructionError::IllegalOwner)
+        return_data.program_id,
+        paladin_sol_stake_view_program_client::ID
     );
+    let expected = GetStakeActivatingAndDeactivatingReturnData::default();
+    let returned =
+        bytemuck::try_from_bytes::<GetStakeActivatingAndDeactivatingReturnData>(&return_data.data)
+            .unwrap();
+    assert_eq!(&expected, returned);
 }
