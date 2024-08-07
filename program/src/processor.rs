@@ -37,16 +37,19 @@ pub fn process_instruction<'a>(
 fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     let stake_info = next_account_info(accounts_iter)?;
-    if *stake_info.owner != stake::program::id() {
-        return Err(ProgramError::IllegalOwner);
-    }
-
     let stake_history_info = next_account_info(accounts_iter)?;
     if *stake_history_info.key != sysvar::stake_history::id() {
         return Err(ProgramError::InvalidArgument);
     }
 
     let mut stake_view = GetStakeActivatingAndDeactivatingReturnData::default();
+
+    // if it's not a SOL stake, that's fine, all zeros
+    if *stake_info.owner != stake::program::id() {
+        set_return_data(bytemuck::bytes_of(&stake_view));
+        return Ok(());
+    }
+
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
 
     if let Some(authorized) = stake.authorized() {
