@@ -53,6 +53,7 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
     let stake = try_from_slice_unchecked::<stake::state::StakeStateV2>(&stake_info.data.borrow())?;
 
     if let Some(authorized) = stake.authorized() {
+        stake_view.staker = authorized.staker;
         stake_view.withdrawer = authorized.withdrawer;
     }
 

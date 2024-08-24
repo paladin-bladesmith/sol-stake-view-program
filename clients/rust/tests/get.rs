@@ -15,6 +15,7 @@ use {
         vote_instruction,
         vote_state::{VoteInit, VoteState},
     },
+    spl_pod::option::PodOption,
 };
 
 async fn create_vote(
@@ -214,8 +215,10 @@ async fn success_undelegated() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
+    let expected_staker: PodOption<Pubkey> = Some(context.payer.pubkey()).try_into().unwrap();
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        staker: expected_staker,
+        withdrawer: expected_staker,
         ..Default::default()
     };
     let returned =
@@ -266,8 +269,10 @@ async fn success_activating() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
+    let expected_staker: PodOption<Pubkey> = Some(context.payer.pubkey()).try_into().unwrap();
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        staker: expected_staker,
+        withdrawer: expected_staker,
         delegated_vote: Some(vote).try_into().unwrap(),
         activating: stake_amount.into(),
         ..Default::default()
@@ -323,8 +328,10 @@ async fn success_effective() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
+    let expected_staker: PodOption<Pubkey> = Some(context.payer.pubkey()).try_into().unwrap();
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        staker: expected_staker,
+        withdrawer: expected_staker,
         delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount.into(),
         ..Default::default()
@@ -382,8 +389,10 @@ async fn success_deactivating() {
         return_data.program_id,
         paladin_sol_stake_view_program_client::ID
     );
+    let expected_staker: PodOption<Pubkey> = Some(context.payer.pubkey()).try_into().unwrap();
     let expected = GetStakeActivatingAndDeactivatingReturnData {
-        withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
+        staker: expected_staker,
+        withdrawer: expected_staker,
         delegated_vote: Some(vote).try_into().unwrap(),
         effective: stake_amount.into(),
         deactivating: stake_amount.into(),
@@ -446,6 +455,7 @@ async fn success_inactive() {
         paladin_sol_stake_view_program_client::ID
     );
     let expected = GetStakeActivatingAndDeactivatingReturnData {
+        staker: Some(context.payer.pubkey()).try_into().unwrap(),
         withdrawer: Some(context.payer.pubkey()).try_into().unwrap(),
         ..Default::default()
     };
