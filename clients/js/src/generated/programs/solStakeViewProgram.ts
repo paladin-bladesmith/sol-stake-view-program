@@ -15,7 +15,7 @@ import {
 import { type ParsedGetStakeActivatingAndDeactivatingInstruction } from '../instructions';
 
 export const SOL_STAKE_VIEW_PROGRAM_PROGRAM_ADDRESS =
-  'stkVUdWUiarMmkttUKMGLCLwHUkBqYfQ9vZcfG3T7LU' as Address<'stkVUdWUiarMmkttUKMGLCLwHUkBqYfQ9vZcfG3T7LU'>;
+  '7GXAVdVr4QkdZBJTUAkKNKnBD4tabJQAG7R79dj4kibk' as Address<'7GXAVdVr4QkdZBJTUAkKNKnBD4tabJQAG7R79dj4kibk'>;
 
 export enum SolStakeViewProgramInstruction {
   GetStakeActivatingAndDeactivating,
@@ -34,7 +34,7 @@ export function identifySolStakeViewProgramInstruction(
 }
 
 export type ParsedSolStakeViewProgramInstruction<
-  TProgram extends string = 'stkVUdWUiarMmkttUKMGLCLwHUkBqYfQ9vZcfG3T7LU',
+  TProgram extends string = '7GXAVdVr4QkdZBJTUAkKNKnBD4tabJQAG7R79dj4kibk',
 > = {
   instructionType: SolStakeViewProgramInstruction.GetStakeActivatingAndDeactivating;
 } & ParsedGetStakeActivatingAndDeactivatingInstruction<TProgram>;
