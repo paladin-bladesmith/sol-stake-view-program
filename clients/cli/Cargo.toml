@@ -11,13 +11,13 @@ bytemuck = "1.16"
 clap = { version = "3", features = ["cargo"] }
 futures-util = "0.3.19"
 paladin-sol-stake-view-program-client = { path = "../rust" }
-solana-clap-v3-utils = "2.0.3"
-solana-cli-config = "2.0.3"
-solana-client = "2.0.3"
-solana-logger = "2.0.3"
-solana-remote-wallet = "2.0.3"
-solana-sdk = "2.0.3"
+solana-clap-v3-utils = "1.18.23"
+solana-cli-config = "1.18.23"
+solana-client = "1.18.23"
+solana-logger = "1.18.23"
+solana-remote-wallet = "1.18.23"
+solana-sdk = "1.18.23"
 tokio = { version = "1", features = ["full"] }
 
 [dev-dependencies]
-solana-test-validator = "2.0.3"
+solana-test-validator = "1.18.23"
