@@ -12,6 +12,7 @@ use {
         program_error::ProgramError,
         pubkey::Pubkey,
         stake,
+        stake_history::StakeHistory,
         sysvar::{self, Sysvar},
     },
 };
@@ -58,7 +59,7 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
 
     // if not delegated, that's fine, all zeros
     if let Some(delegation) = stake.delegation() {
-        let stake_history = bincode::deserialize(&stake_history_info.data.borrow())
+        let stake_history: StakeHistory = bincode::deserialize(&stake_history_info.data.borrow())
             .map_err(|_| ProgramError::InvalidAccountData)?;
         let current_epoch = Clock::get()?.epoch;
         let stake_activation =
