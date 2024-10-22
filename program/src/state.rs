@@ -6,6 +6,7 @@ use {
 #[repr(C)]
 #[derive(Copy, Clone, Default, Pod, Zeroable)]
 pub struct GetStakeActivatingAndDeactivatingReturnData {
+    pub staker: Pubkey,
     pub withdrawer: Pubkey,
     pub delegated_vote: Pubkey,
     pub effective: u64,
