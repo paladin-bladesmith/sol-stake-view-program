@@ -11,7 +11,8 @@ fn process_instruction<'a>(
 ) -> ProgramResult {
     if let Err(error) = processor::process_instruction(program_id, accounts, instruction_data) {
         // catch the error so we can print it
-        msg!("{error}");
+        msg!("{}", error);
+
         return Err(error);
     }
     Ok(())

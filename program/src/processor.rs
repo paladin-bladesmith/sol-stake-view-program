@@ -77,5 +77,6 @@ fn get_stake_activating_and_deactivating(accounts: &[AccountInfo]) -> ProgramRes
     }
 
     set_return_data(bytemuck::bytes_of(&stake_view));
+
     Ok(())
 }
