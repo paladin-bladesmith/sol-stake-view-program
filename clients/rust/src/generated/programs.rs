@@ -8,4 +8,4 @@ use solana_program::{pubkey, pubkey::Pubkey};
 
 /// `sol_stake_view_program` program ID.
 pub const SOL_STAKE_VIEW_PROGRAM_ID: Pubkey =
-    pubkey!("7GXAVdVr4QkdZBJTUAkKNKnBD4tabJQAG7R79dj4kibk");
+    pubkey!("5DVCQTwNrDBg5yBNRVWSQ7p6Jk1euxXJb6aDYYdjw4Vw");
