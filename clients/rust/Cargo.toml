@@ -18,12 +18,13 @@ num-derive = "0.3"
 num-traits = "0.2"
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_with = { version = "3.0", optional = true }
-solana-program = "2.0"
+solana-program = "2.1.4"
 spl-pod = "0.3.1"
 thiserror = "1.0"
 
 [dev-dependencies]
 assert_matches = "1.5.0"
-solana-program-test = "2.0"
-solana-sdk = "2.0"
-solana-vote-program = "2.0"
+solana-program-test = "2.1.4"
+solana-sdk = "2.1.4"
+solana-vote-program = "2.1.4"
+spl-token = { version = "4.0.0", features = ["no-entrypoint"] }
