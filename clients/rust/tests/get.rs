@@ -496,7 +496,7 @@ async fn fail_not_stake_history() {
 
 #[tokio::test]
 async fn success_not_stake() {
-    let mut context = ProgramTest::new(
+    let context = ProgramTest::new(
         "paladin_sol_stake_view_program",
         paladin_sol_stake_view_program_client::ID,
         None,
