@@ -11,7 +11,7 @@ license-file = "../../LICENSE"
 serde = ["dep:serde", "dep:serde_with"]
 
 [dependencies]
-borsh = "0.10"
+borsh = "^0.10"
 bytemuck = "1.16"
 bytemuck_derive = "1.7"
 num-derive = "0.3"
@@ -27,4 +27,4 @@ assert_matches = "1.5.0"
 solana-program-test = "2.1.4"
 solana-sdk = "2.1.4"
 solana-vote-program = "2.1.4"
-spl-token = { version = "4.0.0", features = ["no-entrypoint"] }
+spl-token = { version = "6.0.0", features = ["no-entrypoint"] }
