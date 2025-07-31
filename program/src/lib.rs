@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 #[cfg(all(target_os = "solana", feature = "bpf-entrypoint"))]
 mod entrypoint;
 pub mod instruction;
